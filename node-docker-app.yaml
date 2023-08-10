@@ -33,7 +33,7 @@ spec:
   arguments:
     parameters:
       - name: repo
-        value: https://github.com/ignitedotdev/ci-cd.git
+        value: https://github.com/chuksdsilent/igniite-ci-cd.git
       - name: branch
         value: main
       - name: path
