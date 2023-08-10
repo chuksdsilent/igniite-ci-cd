@@ -62,7 +62,6 @@ spec:
                   value: "{{workflow.parameters.repo}}"
                 - name: branch
                   value: "{{workflow.parameters.branch}}"
-            depends: "clone"
           - name: image
             template: image
             arguments:
