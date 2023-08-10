@@ -1,9 +1,11 @@
 apiVersion: v1
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MSI6eyJ1c2VybmFtZSI6Im9zaGFieiIsInBhc3N3b3JkIjoiZGNrcl9wYXRfbmdRNUhzVzhIZ0xodXR1VG1wM2lLbTg2M0xFIiwiZW1haWwiOiJjaHVrc2RzaWxlbnRAZ21haWwuY29tIiwiYXV0aCI6ImIzTm9ZV0o2T21SamEzSmZjR0YwWDI1blVUVkljMWM0U0dkTWFIVjBkVlJ0Y0ROcFMyMDROak5NUlE9PSJ9fX0=
 kind: Secret
 metadata:
+  creationTimestamp: "2023-08-10T12:40:09Z"
   name: docker-config
-  namespace: argocd
-data:
-  .dockerconfigjson: >-
-    eyJhdXRocyI6eyI4N
+  namespace: default
+  resourceVersion: "432696"
+  uid: 70ac98d9-61a2-4801-bdb7-aabe73da71d9
 type: kubernetes.io/dockerconfigjson

@@ -1,1 +1,3 @@
 nodejs/node_modules/
+.docker-config.yaml
+kubesecret.txt
