@@ -62,12 +62,6 @@ spec:
                   value: "{{workflow.parameters.repo}}"
                 - name: branch
                   value: "{{workflow.parameters.branch}}"
-          - name: build
-            template: build
-            arguments:
-              parameters:
-                - name: path
-                  value: "{{workflow.parameters.path}}"
             depends: "clone"
           - name: image
             template: image
@@ -77,7 +71,7 @@ spec:
                   value: "{{workflow.parameters.path}}"
                 - name: image
                   value: "{{workflow.parameters.image}}"
-            depends: "build"
+            depends: "clone"
     - name: clone
       inputs:
         parameters:
@@ -139,4 +133,3 @@ spec:
           - dockerfile=.
           - --output
           - type=image,name=docker.io/{{inputs.parameters.image}},push=true
-        depends: "clone"
