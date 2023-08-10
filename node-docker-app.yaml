@@ -100,25 +100,6 @@ spec:
           - --single-branch
           - "{{inputs.parameters.repo}}"
           - .
-    - name: build
-      inputs:
-        parameters:
-          - name: path
-      container:
-        image: node:18-alpine
-        volumeMounts:
-          - mountPath: /work
-            name: work
-        workingDir: /work/{{inputs.parameters.path}}
-        env:
-          # Because this is not a Gomodule, we must turn modules off.
-          - name: node-app
-            value: "off"
-        command: [sh, -c]
-        args:
-          [
-            "COPY package*.json ./ & RUN npm install & COPY . . & EXPOSE 8080 & node server.js",
-          ]
     - name: image
       inputs:
         parameters:
@@ -158,3 +139,4 @@ spec:
           - dockerfile=.
           - --output
           - type=image,name=docker.io/{{inputs.parameters.image}},push=true
+        depends: "clone"
