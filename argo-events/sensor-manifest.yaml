@@ -25,7 +25,7 @@ spec:
               metadata:
                 generateName: s3-react-upload-
               spec:
-                entrypoint: git-clone
+                entrypoint: React-app-build-and-deploy-to-s3
                 podGC:
                   strategy: OnPodSuccess
                 deleteDelayDuration: 10s
