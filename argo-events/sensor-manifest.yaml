@@ -26,17 +26,24 @@ spec:
                 generateName: s3-react-upload-
               spec:
                 entrypoint: git-clone
-                arguments:
-                  parameters:
-                    - name: url
-                      value: hello world
-                    - name: bucket_name
-                      value: hello world
                 podGC:
                   strategy: OnPodSuccess
                 deleteDelayDuration: 10s
                 templates:
-                  - name: git-clone
+                  - name: step-1
+                    steps:
+                      - - name: React app build and deploy to s3
+                          template: React-app-build-and-deploy-to-s3
+                          arguments:
+                            parameters:
+                              - name: url
+                                value: hello world
+                              - name: bucket_name
+                                value: hello world
+                      - - name: curl a Post method
+                          template: curl-a-post-method
+
+                  - name: React-app-build-and-deploy-to-s3
                     inputs:
                       parameters:
                         - name: url
@@ -68,6 +75,15 @@ spec:
                             secretKeySecret:
                               name: mysecret
                               key: secretKey
+
+                  - name: curl-a-post-method
+                    container:
+                      image: curlimages/curl:latest
+                      command:
+                        - sh
+                      source: |
+                        http_response = $(curl -d '{"url":"https://github.com/ignitedotdev/react-app", "bucket_name": "ignite-react-app-2023"}' -H "Content-Type: application/json" -X POST http://localhost:5400/example)
+
           parameters:
             - src:
                 dependencyName: test-dep
