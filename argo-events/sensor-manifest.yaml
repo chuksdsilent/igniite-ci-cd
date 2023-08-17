@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: webhook
+  namespace: argo-events
+spec:
+  template:
+    serviceAccountName: operate-workflow-sa
+  dependencies:
+    - name: test-dep
+      eventSourceName: webhook
+      eventName: example
+  triggers:
+    - template:
+        name: webhook-workflow-trigger
+        k8s:
+          group: argoproj.io
+          version: v1alpha1
+          resource: workflows
+          operation: create
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: s3-react-upload-
+              spec:
+                entrypoint: git-clone
+                podGC:
+                  strategy: OnPodSuccess
+                deleteDelayDuration: 10s
+                templates:
+                  - name: git-clone
+                    inputs:
+                      artifacts:
+                        - name: argo-source
+                          path: /src
+                          git:
+                            repo:
+                    container:
+                      image: node:16-alpine3.17
+                      command: [sh, -c]
+                      args: ["npm install && npm run build"]
+                      workingDir: /src
+                    outputs:
+                      artifacts:
+                        - name: message
+                          path: /src/build
+                          archive:
+                            none: {}
+                          s3:
+                            endpoint: s3.amazonaws.com
+                            bucket:
+                              name: dummy-value
+                            region: eu-west-2
+                            key: "."
+                            accessKeySecret:
+                              name: mysecret
+                              key: accessKey
+                            secretKeySecret:
+                              name: mysecret
+                              key: secretKey
+      parameters:
+        - src:
+            dependencyName: test-dep
+            dataKey: body.url
+          dest: spec.arguments.parameters.0.value
+        - src:
+            dependencyName: test-dep
+            dataKey: body.bucket_name
+          dest: k8s.source.s3.bucket.name
+        - src:
+            dependencyName: test-dep
+            dataKey: body.bucket_name
+          dest: k8s.source.s3.bucket.name
