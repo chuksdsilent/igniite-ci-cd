@@ -23,7 +23,7 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                name: s3-react-upload
+                generateName: s3-react-upload-
               spec:
                 entrypoint: git-clone
                 arguments:
@@ -32,9 +32,15 @@ spec:
                       value: hello world
                     - name: bucket_name
                       value: hello world
+                podGC:
+                  strategy: OnPodSuccess
+                deleteDelayDuration: 10s
                 templates:
                   - name: git-clone
                     inputs:
+                      parameters:
+                        - name: url
+                        - name: bucket_name
                       artifacts:
                         - name: argo-source
                           path: /src
@@ -57,17 +63,17 @@ spec:
                             region: eu-west-2
                             key: "."
                             accessKeySecret:
-                              name: secretdata
+                              name: mysecret
                               key: accessKey
                             secretKeySecret:
-                              name: secretdata
+                              name: mysecret
                               key: secretKey
-            parameters:
-              - src:
-                  dependencyName: test-dep
-                  dataKey: body.url
-                dest: spec.arguments.parameters.0.value
-              - src:
-                  dependencyName: test-dep
-                  dataKey: body.bucket_name
-                dest: spec.arguments.parameters.1.value
+          parameters:
+            - src:
+                dependencyName: test-dep
+                dataKey: body.url
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: test-dep
+                dataKey: body.bucket_name
+              dest: spec.arguments.parameters.1.value
