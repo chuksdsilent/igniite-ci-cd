@@ -25,25 +25,25 @@ spec:
               metadata:
                 generateName: s3-react-upload-
               spec:
-                entrypoint: React-app-build-and-deploy-to-s3
+                entrypoint: ignite-workflow
                 podGC:
                   strategy: OnPodSuccess
                 deleteDelayDuration: 10s
                 templates:
-                  - name: step-1
+                  - name: ignite-workflow
                     steps:
-                      - - name: React app build and deploy to s3
-                          template: React-app-build-and-deploy-to-s3
+                      - - name: React-app-build-and-deploy-to-s3
+                          template: Reactappbuildanddeploytos3
                           arguments:
                             parameters:
                               - name: url
                                 value: hello world
                               - name: bucket_name
                                 value: hello world
-                      - - name: curl a Post method
-                          template: curl-a-post-method
+                      - - name: curl-a-Post-method
+                          template: curlapostmethod
 
-                  - name: React-app-build-and-deploy-to-s3
+                  - name: Reactappbuildanddeploytos3
                     inputs:
                       parameters:
                         - name: url
@@ -76,7 +76,7 @@ spec:
                               name: mysecret
                               key: secretKey
 
-                  - name: curl-a-post-method
+                  - name: curlapostmethod
                     container:
                       image: curlimages/curl:latest
                       command:
