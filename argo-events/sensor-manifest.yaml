@@ -23,12 +23,15 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                generateName: s3-react-upload-
+                name: s3-react-upload
               spec:
                 entrypoint: git-clone
-                podGC:
-                  strategy: OnPodSuccess
-                deleteDelayDuration: 10s
+                arguments:
+                  parameters:
+                    - name: url
+                      value: hello world
+                    - name: bucket_name
+                      value: hello world
                 templates:
                   - name: git-clone
                     inputs:
@@ -36,7 +39,7 @@ spec:
                         - name: argo-source
                           path: /src
                           git:
-                            repo:
+                            repo: "{{inputs.parameters.url}}"
                     container:
                       image: node:16-alpine3.17
                       command: [sh, -c]
@@ -50,26 +53,21 @@ spec:
                             none: {}
                           s3:
                             endpoint: s3.amazonaws.com
-                            bucket:
-                              name: dummy-value
+                            bucket: "{{inputs.parameters.bucket_name}}"
                             region: eu-west-2
                             key: "."
                             accessKeySecret:
-                              name: mysecret
+                              name: secretdata
                               key: accessKey
                             secretKeySecret:
-                              name: mysecret
+                              name: secretdata
                               key: secretKey
-      parameters:
-        - src:
-            dependencyName: test-dep
-            dataKey: body.url
-          dest: spec.arguments.parameters.0.value
-        - src:
-            dependencyName: test-dep
-            dataKey: body.bucket_name
-          dest: k8s.source.s3.bucket.name
-        - src:
-            dependencyName: test-dep
-            dataKey: body.bucket_name
-          dest: k8s.source.s3.bucket.name
+            parameters:
+              - src:
+                  dependencyName: test-dep
+                  dataKey: body.url
+                dest: spec.arguments.parameters.0.value
+              - src:
+                  dependencyName: test-dep
+                  dataKey: body.bucket_name
+                dest: spec.arguments.parameters.1.value
